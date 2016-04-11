@@ -1,28 +1,17 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class scenario_model : MonoBehaviour {
-    private static int scenario_width = 8;
-    private GameObject[,] scenario = new GameObject[scenario_width, 23];
-
-	// Use this for initialization
-	void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+public class Scenario {
+    private GameObject[,] scenario = new GameObject[GameManager.scenario_width, 23];
 
     public void AddPiece(GameObject gameObject)
     {
         //print("Piece x" + Mathf.Round(gameObject.transform.position.x + 5));
         //print("Piece y" + Mathf.Round(gameObject.transform.position.y));
-        for(int i = 0; i < gameObject.transform.childCount; i++)
+        for (int i = 0; i < gameObject.transform.childCount; i++)
         {
             GameObject cube = gameObject.transform.GetChild(i).gameObject;
-            int x = Mathf.RoundToInt(gameObject.transform.position.x + cube.transform.localPosition.x - 0.5f + scenario_width / 2);
+            int x = Mathf.RoundToInt(gameObject.transform.position.x + cube.transform.localPosition.x - 0.5f + GameManager.scenario_width / 2);
             int y = Mathf.RoundToInt(gameObject.transform.position.y + cube.transform.localPosition.y - 0.5f);
             cube.GetComponent<cube_collision>().ScenarioPosition = new Vector2(x, y);
             //print("Cube at " + x + "," + y);
@@ -72,7 +61,7 @@ public class scenario_model : MonoBehaviour {
 
             //print("Checking if possible to move from " + position + " to " + targetPosition);
 
-            if (targetPosition.y < 0 || targetPosition.x < 0 || targetPosition.x > (scenario_width - 1))
+            if (targetPosition.y < 0 || targetPosition.x < 0 || targetPosition.x > (GameManager.scenario_width - 1))
             {
                 canMove = false;
                 break;
@@ -125,10 +114,11 @@ public class scenario_model : MonoBehaviour {
                 linesToDelete.Add(i);
                 for (int j = 0; j < scenario.GetLength(0); j++)
                 {
-                    Destroy(scenario[j, i]);
+                    GameObject.Destroy(scenario[j, i]);
                 }
             }
         }
+        GameManager.lines += linesToDelete.Count;
         MoveLines(linesToDelete);
     }
 
@@ -162,7 +152,7 @@ public class scenario_model : MonoBehaviour {
             GameObject cube = piece.transform.GetChild(i).gameObject;
             Vector2 targetPosition = cube.GetComponent<cube_collision>().TargetPosition;
 
-            if (targetPosition.y < 0 || targetPosition.x < 0 || targetPosition.x > (scenario_width - 1))
+            if (targetPosition.y < 0 || targetPosition.x < 0 || targetPosition.x > (GameManager.scenario_width - 1))
             {
                 canMove = false;
                 break;
@@ -192,7 +182,6 @@ public class scenario_model : MonoBehaviour {
             }
             cubeCollision.ScenarioPosition = targetPosition;
             scenario[(int)targetPosition.x, (int)targetPosition.y] = cube;
-            print("Cube moved from " + position + " to " + targetPosition);
         }
     }
 }

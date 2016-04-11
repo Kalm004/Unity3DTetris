@@ -4,7 +4,6 @@ using System.Collections;
 
 public class piece_rotate : MonoBehaviour {
     private piece_move pieceMove;
-    private scenario_model scenarioModel;
     private enum PiecesTypes
     {
         Line,
@@ -27,7 +26,6 @@ public class piece_rotate : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        scenarioModel = GameObject.FindGameObjectWithTag("Scenario").GetComponent<scenario_model>();
         pieceMove = gameObject.GetComponent<piece_move>();
 	}
 	
@@ -35,9 +33,8 @@ public class piece_rotate : MonoBehaviour {
 	void Update () {
         if (!pieceMove.Stopped && Input.GetKeyDown(KeyCode.UpArrow))
         {
-            print("Trying to rotate a " + pieceType.ToString());
             CalculateNewPositions();
-            if (scenarioModel.CheckTargetPositionIsPossible(gameObject))
+            if (GameManager.scenario.CheckTargetPositionIsPossible(gameObject))
             {
                 for (int i = 0; i < gameObject.transform.childCount; i++)
                 {
@@ -46,10 +43,8 @@ public class piece_rotate : MonoBehaviour {
                     Vector2 delta = cubeCollision.TargetPosition - cubeCollision.ScenarioPosition;
                     cube.transform.Translate(delta.x * cube.transform.localScale.x, delta.y * cube.transform.localScale.y, 0);
                 }
-                scenarioModel.MoveToTargetPosition(gameObject);
+                GameManager.scenario.MoveToTargetPosition(gameObject);
                 status = targetStatus;
-                print("Is possible to rotate the piece of type "
-                    + pieceType.ToString());
             }
         }
     }
@@ -512,6 +507,12 @@ public class piece_rotate : MonoBehaviour {
                 break;
             case PiecesTypes.Square:
                 //Nothing to do
+                for (int i = 0; i < 4; i++)
+                {
+                    GameObject cube = gameObject.transform.GetChild(i).gameObject;
+                    cube_collision cubeCollision = cube.GetComponent<cube_collision>();
+                    gameObject.transform.GetChild(i).SendMessage("SetTargetPosition", cubeCollision.ScenarioPosition);
+                }
                 break;
             default:
                 break;

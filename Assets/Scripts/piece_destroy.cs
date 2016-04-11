@@ -12,7 +12,6 @@ public class piece_destroy : MonoBehaviour {
     {
         if (transform.childCount == 1)
         {
-            print("Piece destroyed");
             Destroy(gameObject);
         }
     }

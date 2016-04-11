@@ -6,7 +6,6 @@ public class generate_pieces : MonoBehaviour {
     public GameObject cube;
     public GameObject scenario;
     private GameObject lastPiece = null;
-    private scenario_model scenarioModel;
     public Material quadMaterial;
     public Material tPieceMaterial;
     public Material lPieceMaterial;
@@ -18,7 +17,6 @@ public class generate_pieces : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        scenarioModel = scenario.GetComponent<scenario_model>();
         StartCoroutine(GeneratePieces());
 	}
 	
@@ -34,7 +32,7 @@ public class generate_pieces : MonoBehaviour {
             if (lastPiece == null || lastPiece.GetComponent<piece_move>().Stopped)
             {
                 lastPiece = CreatePiece();
-                scenarioModel.AddPiece(lastPiece);
+                GameManager.scenario.AddPiece(lastPiece);
             }
             yield return new WaitForSeconds(waitUntilNewPiece);
         }
