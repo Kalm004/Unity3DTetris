@@ -6,4 +6,10 @@ public static class GameManager {
     public static int scenario_width = 8;
 
     public static Scenario scenario = new Scenario();
+
+    public static void RestartGame()
+    {
+        lines = 0;
+        scenario = new Scenario();
+    }
 }

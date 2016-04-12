@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class Scenario {
@@ -15,6 +16,10 @@ public class Scenario {
             int y = Mathf.RoundToInt(gameObject.transform.position.y + cube.transform.localPosition.y - 0.5f);
             cube.GetComponent<cube_collision>().ScenarioPosition = new Vector2(x, y);
             //print("Cube at " + x + "," + y);
+            if (scenario[x,y] != null)
+            {
+                SceneManager.LoadScene("Final");
+            }
             scenario[x, y] = cube;
         }
     }
