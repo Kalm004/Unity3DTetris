@@ -20,9 +20,9 @@ public class generate_pieces : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
+        nextPiece = null;
         GameManager.scoreUpEffect = scoreUpEffect.GetComponent<ParticleSystem>();
         StartCoroutine(GeneratePieces());
-        nextPiece = null;
 	}
 	
 	// Update is called once per frame
