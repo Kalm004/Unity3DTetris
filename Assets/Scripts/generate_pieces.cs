@@ -17,6 +17,7 @@ public class generate_pieces : MonoBehaviour {
     public float waitUntilNewPiece = 0.2f;
     public GameObject scoreUpEffect;
     private GameObject nextPiece = null;
+    private float endDeletingTime = 0;
 
     // Use this for initialization
     void Start () {
@@ -26,26 +27,41 @@ public class generate_pieces : MonoBehaviour {
 	}
 	
 	// Update is called once per frame
-	void Update () {
-	
-	}
+	void Update ()
+    {
+        if (GameManager.DeletingLines)
+        {
+            if (endDeletingTime == 0)
+            {
+                endDeletingTime = Time.time + GameManager.DeletingTime;
+            }
+            if (Time.time > endDeletingTime)
+            {
+                endDeletingTime = 0;
+                GameManager.DeletingLines = false;
+            }
+        }
+    }
 
     IEnumerator GeneratePieces()
     {
         while (true)
         {
-            if (lastPiece == null || lastPiece.GetComponent<piece_move>().Stopped)
+            if (!GameManager.DeletingLines)
             {
-                if (nextPiece == null)
+                if (lastPiece == null || lastPiece.GetComponent<piece_move>().Stopped)
                 {
+                    if (nextPiece == null)
+                    {
+                        nextPiece = CreatePiece();
+                    }
+                    lastPiece = nextPiece;
+                    lastPiece.transform.position = transform.position;
+                    lastPiece.transform.localScale = Vector3.one;
+                    lastPiece.SendMessage("StartMovement");
                     nextPiece = CreatePiece();
+                    GameManager.scenario.AddPiece(lastPiece);
                 }
-                lastPiece = nextPiece;
-                lastPiece.transform.position = transform.position;
-                lastPiece.transform.localScale = Vector3.one;
-                lastPiece.SendMessage("StartMovement");
-                nextPiece = CreatePiece();
-                GameManager.scenario.AddPiece(lastPiece);
             }
             yield return new WaitForSeconds(waitUntilNewPiece);
         }

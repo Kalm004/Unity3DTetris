@@ -9,6 +9,7 @@ public class piece_move : MonoBehaviour {
     private static float firstLateralMovementDelay = 0.5f;
     private static float otherLateralMovementDelay = 0.1f;
     private float prevHorizontalMove = 0;
+ 
 
     public bool Stopped
     {

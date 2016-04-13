@@ -2,9 +2,12 @@
 using System.Collections;
 
 public class cube_collision : MonoBehaviour {
-    private Vector2 scenarioPosition;
+    private Vector2 scenarioPosition = new Vector2(-1, -1);
     private Vector2 targetPosition;
     private int cubeNumber;
+    private Renderer renderer;
+    private float blinkingTime = 0.1f;
+    private float nextBlink = 0;
 
     public Vector2 ScenarioPosition
     {
@@ -45,12 +48,31 @@ public class cube_collision : MonoBehaviour {
     }
     // Use this for initialization
     void Start () {
-	
+        renderer = GetComponent<Renderer>();
 	}
 	
 	// Update is called once per frame
 	void Update () {
-	
+        if (GameManager.DeletingLines)
+        {
+            bool found = false;
+            foreach (int line in GameManager.LinesToDelete)
+            {
+                if (line == scenarioPosition.y)
+                {
+                    found = true;
+                    break;
+                }
+            }
+            if (found)
+            {
+                if (Time.time > nextBlink)
+                {
+                    renderer.enabled = !renderer.enabled;
+                    nextBlink = Time.time + blinkingTime;
+                }
+            }
+        }
 	}
 
     void OnDestroy()

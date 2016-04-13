@@ -117,17 +117,25 @@ public class Scenario {
             if (line)
             {
                 linesToDelete.Add(i);
-                for (int j = 0; j < scenario.GetLength(0); j++)
-                {
-                    GameObject.Destroy(scenario[j, i]);
-                }
             }
         }
         GameManager.Lines += linesToDelete.Count;
-        MoveLines(linesToDelete);
+        GameManager.LinesToDelete = linesToDelete;
     }
 
-    private void MoveLines(ArrayList lines)
+    public void DeleteLines(ArrayList lines)
+    {
+        foreach (int i in lines)
+        {
+            for (int j = 0; j < scenario.GetLength(0); j++)
+            {
+                GameObject.Destroy(scenario[j, i]);
+                scenario[j, i] = null;
+            }
+        }
+    }
+
+    public void MoveLines(ArrayList lines)
     {
         lines.Sort();
         lines.Reverse();

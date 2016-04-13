@@ -9,6 +9,50 @@ public static class GameManager {
 
     public static ParticleSystem scoreUpEffect;
 
+    private static bool deletingLines = false;
+
+    public static bool DeletingLines
+    {
+        get
+        {
+            return deletingLines;
+        }
+        set
+        {
+            if (deletingLines && !value)
+            {
+                scenario.DeleteLines(linesToDelete);
+                scenario.MoveLines(linesToDelete);
+            }
+            deletingLines = value;
+        }
+    }
+
+    public static float DeletingTime
+    {
+        get
+        {
+            return 1f;
+        }
+    }
+
+    private static ArrayList linesToDelete;
+
+    public static ArrayList LinesToDelete {
+        get
+        {
+            return linesToDelete;
+        }
+        set
+        {
+            linesToDelete = value;
+            if (linesToDelete.Count > 0)
+            {
+                deletingLines = true;
+            }
+        }
+    }
+
     public static int Lines
     {
         get
