@@ -2,7 +2,7 @@
 using System.Collections;
 
 public class piece_move : MonoBehaviour {
-    private bool checkCanMoveDown = true;
+    private bool checkCanMoveDown = false;
     private float nextDownMovement = 0;
     private float nextLateralMovement = 0;
     private static float movementDelayUserAction = 0.1f;
@@ -65,4 +65,9 @@ public class piece_move : MonoBehaviour {
             prevHorizontalMove = horizontalMove;
         }
 	}
+
+    public void StartMovement()
+    {
+        checkCanMoveDown = true;
+    }
 }

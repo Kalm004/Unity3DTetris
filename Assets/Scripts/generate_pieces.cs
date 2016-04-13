@@ -4,7 +4,7 @@ using System.Collections;
 public class generate_pieces : MonoBehaviour {
     public GameObject piece;
     public GameObject cube;
-    public GameObject scenario;
+    public GameObject nextPiecePosition;
     private GameObject lastPiece = null;
     public Texture quadTexture;
     public Texture tPieceTexture;
@@ -16,11 +16,13 @@ public class generate_pieces : MonoBehaviour {
     private const int differentTypeOfPieces = 7;
     public float waitUntilNewPiece = 0.2f;
     public GameObject scoreUpEffect;
+    private GameObject nextPiece = null;
 
     // Use this for initialization
     void Start () {
         GameManager.scoreUpEffect = scoreUpEffect.GetComponent<ParticleSystem>();
         StartCoroutine(GeneratePieces());
+        nextPiece = null;
 	}
 	
 	// Update is called once per frame
@@ -34,7 +36,15 @@ public class generate_pieces : MonoBehaviour {
         {
             if (lastPiece == null || lastPiece.GetComponent<piece_move>().Stopped)
             {
-                lastPiece = CreatePiece();
+                if (nextPiece == null)
+                {
+                    nextPiece = CreatePiece();
+                }
+                lastPiece = nextPiece;
+                lastPiece.transform.position = transform.position;
+                lastPiece.transform.localScale = Vector3.one;
+                lastPiece.SendMessage("StartMovement");
+                nextPiece = CreatePiece();
                 GameManager.scenario.AddPiece(lastPiece);
             }
             yield return new WaitForSeconds(waitUntilNewPiece);
@@ -44,25 +54,37 @@ public class generate_pieces : MonoBehaviour {
 
     private GameObject CreatePiece()
     {
+        GameObject result = null;
         switch (Random.Range(0, differentTypeOfPieces))
         {
             case 0:
-                return CreateLongPiece();
+                result = CreateLongPiece();
+                break;
             case 1:
-                return CreateQuad();
+                result = CreateQuad();
+                break;
             case 2:
-                return CreateTPiece();
+                result = CreateTPiece();
+                break;
             case 3:
-                return CreateLPiece();
+                result = CreateLPiece();
+                break;
             case 4:
-                return CreateLInvertPiece();
+                result = CreateLInvertPiece();
+                break;
             case 5:
-                return CreateRPiece();
+                result = CreateRPiece();
+                break;
             case 6:
-                return CreateInvertRPiece();
+                result = CreateInvertRPiece();
+                break;
             default:
-                return null;
+                result = null;
+                break;
         }
+        result.transform.position = nextPiecePosition.transform.position;
+        result.transform.localScale = Vector3.one * 0.5f;
+        return result;
     }
 
     private GameObject CreateLongPiece()
