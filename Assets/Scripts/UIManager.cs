@@ -12,6 +12,7 @@ public class UIManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        linesText.text = "Lines = " + GameManager.lines;
+        linesText.text = "Lines = ";
+        linesText.text += GameManager.Lines;
 	}
 }

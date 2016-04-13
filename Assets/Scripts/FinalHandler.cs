@@ -8,7 +8,7 @@ public class FinalHandler : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        linesText.text = "Lines = " + GameManager.lines;
+        linesText.text = "Lines = " + GameManager.Lines;
 	}
 	
 	// Update is called once per frame

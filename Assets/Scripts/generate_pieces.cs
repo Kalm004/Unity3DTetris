@@ -15,9 +15,11 @@ public class generate_pieces : MonoBehaviour {
     public Texture lInvertTexture;
     private const int differentTypeOfPieces = 7;
     public float waitUntilNewPiece = 0.2f;
+    public GameObject scoreUpEffect;
 
     // Use this for initialization
     void Start () {
+        GameManager.scoreUpEffect = scoreUpEffect.GetComponent<ParticleSystem>();
         StartCoroutine(GeneratePieces());
 	}
 	

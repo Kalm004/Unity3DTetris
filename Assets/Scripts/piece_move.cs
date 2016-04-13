@@ -2,11 +2,14 @@
 using System.Collections;
 
 public class piece_move : MonoBehaviour {
-    public float moveSpeed = 4f;
     private bool checkCanMoveDown = true;
-    private float nextMovement = 0;
-    private float speed = 0.2f;
-    private float lastHorizontalAxis = 0;
+    private float nextDownMovement = 0;
+    private float nextLateralMovement = 0;
+    private static float movementDelayUserAction = 0.1f;
+    private static float firstLateralMovementDelay = 0.5f;
+    private static float otherLateralMovementDelay = 0.1f;
+    private float prevHorizontalMove = 0;
+
     public bool Stopped
     {
         get
@@ -24,9 +27,9 @@ public class piece_move : MonoBehaviour {
     {
         if (checkCanMoveDown)
         {
-            if (Time.time >= nextMovement)
+            if (Time.time >= nextDownMovement)
             {
-                nextMovement = Time.time + speed;
+                nextDownMovement = Time.time + (Input.GetKey(KeyCode.DownArrow) ? movementDelayUserAction : GameManager.GetMovementDelay());
                 if (checkCanMoveDown && GameManager.scenario.CheckPieceCanMoveDown(gameObject))
                 {
                     transform.Translate(-Vector3.up);
@@ -39,23 +42,27 @@ public class piece_move : MonoBehaviour {
                     return;
                 }
             }
-            float horizontalMove = (Input.GetKeyDown(KeyCode.RightArrow) ? 1 : 0) - (Input.GetKeyDown(KeyCode.LeftArrow) ? 1 : 0);
+            float horizontalMove = (Input.GetKey(KeyCode.RightArrow) ? 1 : 0) - (Input.GetKey(KeyCode.LeftArrow) ? 1 : 0);
             if ((horizontalMove > 0 && !GameManager.scenario.CheckPieceCanMoveRight(gameObject) ||
                 (horizontalMove < 0 && !GameManager.scenario.CheckPieceCanMoveLeft(gameObject))))
             {
                 horizontalMove = 0;
-            } else { 
-                if (horizontalMove > 0)
+            } else {
+                if (horizontalMove != prevHorizontalMove || Time.time > nextLateralMovement)
                 {
-                    GameManager.scenario.MoveRight(gameObject);
+                    if (horizontalMove > 0)
+                    {
+                        GameManager.scenario.MoveRight(gameObject);
+                    }
+                    else if (horizontalMove < 0)
+                    {
+                        GameManager.scenario.MoveLeft(gameObject);
+                    }
+                    transform.Translate(new Vector3(horizontalMove, 0, 0));
+                    nextLateralMovement = Time.time + (horizontalMove != prevHorizontalMove ? firstLateralMovementDelay : otherLateralMovementDelay);
                 }
-                else if (horizontalMove < 0)
-                {
-                    GameManager.scenario.MoveLeft(gameObject);
-                }
-                transform.Translate(new Vector3(horizontalMove, 0, 0));
             }
-
+            prevHorizontalMove = horizontalMove;
         }
 	}
 }

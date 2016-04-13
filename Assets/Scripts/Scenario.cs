@@ -123,7 +123,7 @@ public class Scenario {
                 }
             }
         }
-        GameManager.lines += linesToDelete.Count;
+        GameManager.Lines += linesToDelete.Count;
         MoveLines(linesToDelete);
     }
 
